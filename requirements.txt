@@ -1,0 +1,4 @@
+quart
+disnake
+discord.py
+PyDrive
