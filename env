@@ -1,0 +1,10 @@
+token = ""
+client_id = 
+client_secret = ""
+redirect_uri = ""
+google_drive_data_url = ""
+google_drive_backup_url = ""
+join_guilds = []
+admin_users = [976814375123972126]
+admin_guild_id = 
+join_interval = 2

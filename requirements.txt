@@ -1,4 +1,4 @@
-quart
+flask[async]
 disnake
-discord.py
 PyDrive
+python-dotenv
