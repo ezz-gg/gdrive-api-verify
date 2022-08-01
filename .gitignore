@@ -1,0 +1,12 @@
+/*
+__pycache__
+!/.gitignore
+!/README.md
+!/requirements.txt
+!/runtime.txt
+!/Procfile
+!/data/
+!/.env.sample
+/data/*
+!/data/README.md
+!/src/
