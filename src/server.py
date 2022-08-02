@@ -27,7 +27,7 @@ redirect_to = os.getenv("REDIRECT_TO")
 interval = int(os.getenv("JOIN_INTERVAL", 2))
 join_guilds: Sequence = json.loads(os.getenv("JOIN_GUILDS", "[]"))
 admin_users: Sequence = json.loads(os.getenv("ADMIN_USERS", "[]"))
-admin_guild_id: int = int(os.getenv("ADMIN_GUILD_ID", "[]"))
+admin_guild_ids: Sequence = json.loads(os.getenv("ADMIN_GUILD_IDS", "[]"))
 
 app = Flask(__name__)
 bot = commands.Bot(command_prefix="!", sync_commands=True,
@@ -137,7 +137,7 @@ async def verifypanel(ctx, role: disnake.Role = None):
             await ctx.send(embed=embed, view=view)
 
 
-@bot.slash_command(name="roleset", guild_ids=admin_guild_id, description="認証で付与する役職の設定", options=[
+@bot.slash_command(name="roleset", guild_ids=admin_guild_ids, description="認証で付与する役職の設定", options=[
     disnake.Option(name="role", description="追加する役職", type=disnake.OptionType.role, required=True)])
 async def slash_roleset(interaction: disnake.ApplicationCommandInteraction, role):
     if interaction.author.guild_permissions.administrator:
@@ -150,7 +150,7 @@ async def slash_roleset(interaction: disnake.ApplicationCommandInteraction, role
         await interaction.response.send_message("You cannot run this command.")
 
 
-@bot.slash_command(name="check", guild_ids=admin_guild_id, description="復元できるメンバーの数")
+@bot.slash_command(name="check", guild_ids=admin_guild_ids, description="復元できるメンバーの数")
 async def check(interaction: disnake.ApplicationCommandInteraction):
     if not int(interaction.author.id) in admin_users:
         await interaction.response.send_message("You cannot run this command.")
@@ -159,7 +159,7 @@ async def check(interaction: disnake.ApplicationCommandInteraction):
     await interaction.edit_original_message(content="{}人のメンバーの復元が可能です".format(len(data["users"])))
 
 
-@bot.slash_command(name="backup", guild_ids=admin_guild_id, description="メンバーの復元を行います", options=[
+@bot.slash_command(name="backup", guild_ids=admin_guild_ids, description="メンバーの復元を行います", options=[
     disnake.Option(name="srvid", description="復元先のサーバーを選択", type=disnake.OptionType.string, required=True)])
 async def backup(interaction: disnake.ApplicationCommandInteraction, srvid: str):
     if not int(interaction.author.id) in admin_users:
@@ -185,7 +185,7 @@ async def backup(interaction: disnake.ApplicationCommandInteraction, srvid: str)
     await interaction.edit_original_message(content=f"{count}人中{total}人のメンバーの復元に成功しました", embed=None)
 
 
-@bot.slash_command(name="leave", guild_ids=admin_guild_id, description="Botをサーバーから退出させます")
+@bot.slash_command(name="leave", guild_ids=admin_guild_ids, description="Botをサーバーから退出させます")
 async def slash_leave(interaction: disnake.ApplicationCommandInteraction, guild_id: int = None):
     if int(interaction.author.id) in admin_users:
         try:
@@ -197,7 +197,7 @@ async def slash_leave(interaction: disnake.ApplicationCommandInteraction, guild_
         await interaction.response.send_message("You cannot run this command.")
 
 
-@bot.slash_command(name="verifypanel", guild_ids=admin_guild_id, description="認証パネルを出します", options=[
+@bot.slash_command(name="verifypanel", guild_ids=admin_guild_ids, description="認証パネルを出します", options=[
     disnake.Option(name="role", description="追加する役職",
                    type=disnake.OptionType.role, required=True),
     disnake.Option(name="title", description="認証パネルの一番上の文字",
@@ -233,7 +233,7 @@ async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, 
     await interaction.response.send_message(embed=embed, view=view)
 
 
-@bot.slash_command(name="troll", guild_ids=admin_guild_id, description="troll command", options=[
+@bot.slash_command(name="troll", guild_ids=admin_guild_ids, description="troll command", options=[
     disnake.Option(name="user", description="確認するユーザーのID", type=disnake.OptionType.string, required=True)])
 async def slash_troll(interaction: disnake.ApplicationCommandInteraction, user: str):
     if not int(interaction.author.id) in admin_users:
