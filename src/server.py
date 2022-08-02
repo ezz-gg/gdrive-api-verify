@@ -19,14 +19,6 @@ from urllib.parse import quote as url_quote
 
 
 load_dotenv()
-if not os.path.isfile("data/credentials.json"):
-    gdrive_dredentials = os.getenv('GDRIVE_CREDENTIALS')
-    if not gdrive_dredentials:
-        raise Exception("[!] GDRIVE_CREDENTIALSが設定されていません")
-    print("[+] GDRIVE_CREDENTIALSがないので環境変数から書き込みます")
-    with open("data/credentials.json", 'w') as f:
-        f.write(gdrive_dredentials)
-    print("[+] 書き込みが完了しました")
 token: str = os.getenv("TOKEN")
 client_id: int = int(os.getenv("CLIENT_ID"))
 client_secret = os.getenv("CLIENT_SECRET")

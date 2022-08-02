@@ -6,6 +6,18 @@ import json
 import re
 from datetime import datetime
 from lib import API_START_POINT, write_userdata
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+if not os.path.isfile("data/credentials.json"):
+    gdrive_dredentials = os.getenv('GDRIVE_CREDENTIALS')
+    if not gdrive_dredentials:
+        raise Exception("[!] GDRIVE_CREDENTIALSが設定されていません")
+    print("[+] GDRIVE_CREDENTIALSがないので環境変数から書き込みます")
+    with open("data/credentials.json", 'w') as f:
+        f.write(gdrive_dredentials)
+    print("[+] 書き込みが完了しました")
 
 gauth = GoogleAuth()
 scope = "https://www.googleapis.com/auth/drive"
