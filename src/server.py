@@ -1,4 +1,4 @@
-from msilib import sequence
+from typing import Sequence
 from flask import Flask, request, redirect
 from wsgiref import simple_server
 from disnake.ext import commands, tasks
@@ -33,8 +33,8 @@ client_secret = os.getenv("CLIENT_SECRET")
 redirect_uri = os.getenv("REDIRECT_URI")
 redirect_to = os.getenv("REDIRECT_TO")
 interval = int(os.getenv("JOIN_INTERVAL", 2))
-join_guilds: sequence = json.loads(os.getenv("JOIN_GUILDS", "[]"))
-admin_users: sequence = json.loads(os.getenv("ADMIN_USERS", "[]"))
+join_guilds: Sequence = json.loads(os.getenv("JOIN_GUILDS", "[]"))
+admin_users: Sequence = json.loads(os.getenv("ADMIN_USERS", "[]"))
 admin_guild_id: int = int(os.getenv("ADMIN_GUILD_ID", "[]"))
 
 app = Flask(__name__)
