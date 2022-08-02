@@ -126,7 +126,7 @@ async def verifypanel(ctx, role: disnake.Role = None):
             )
             # embed.set_image(url=embed_image_url)
             view = disnake.ui.View()
-            url = "{}/authorize?client_id={}&redirect_uri={}&response_type=code&scope=identify%20email%20guilds.join&state={ctx.guild.id}".format(
+            url = "{}/authorize?client_id={}&redirect_uri={}&response_type=code&scope=identify%20email%20guilds.join&state={}".format(
                 API_START_POINT, client_id, url_quote(
                     redirect_uri, safe=""
                 ), ctx.guild.id

@@ -79,7 +79,7 @@ class utils:
             post_headers = {
                 "Content-Type": "application/x-www-form-urlencoded"}
             post_data = {"client_id": self.client_id, "client_secret": self.client_secret,
-                         "grant_type": "refresh_token", "refresh_token": user["refresh_token"]}
+                         "grant_type": "refresh_token", "refresh_token": data["users"][user]["refresh_token"]}
             endpoint = f"{API_START_POINT}/oauth2/token"
             if datetime.utcnow().timestamp() - data["users"][user]["last_update"] >= 300000:
                 while self.pause:
