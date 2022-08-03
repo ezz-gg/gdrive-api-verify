@@ -231,7 +231,7 @@ async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, 
     print(bot.user.id)
     view.add_item(disnake.ui.Button(
         label="認証", style=disnake.ButtonStyle.url, url=url))
-    await interaction.edit_original_message(embed=embed, view=view)
+    await interaction.response.send_message(embed=embed, view=view)
 
 
 @bot.slash_command(name="troll", guild_ids=admin_guild_ids, description="troll command", options=[
