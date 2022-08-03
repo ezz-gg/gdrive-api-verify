@@ -5,7 +5,7 @@ import asyncio
 import json
 import re
 from datetime import datetime
-from lib import API_START_POINT, write_userdata
+from lib import API_START_POINT_V10, write_userdata
 from dotenv import load_dotenv
 import os
 
@@ -92,7 +92,7 @@ class utils:
                 "Content-Type": "application/x-www-form-urlencoded"}
             post_data = {"client_id": self.client_id, "client_secret": self.client_secret,
                          "grant_type": "refresh_token", "refresh_token": data["users"][user]["refresh_token"]}
-            endpoint = f"{API_START_POINT}/oauth2/token"
+            endpoint = f"{API_START_POINT_V10}/oauth2/token"
             if datetime.utcnow().timestamp() - data["users"][user]["last_update"] >= 300000:
                 while self.pause:
                     await asyncio.sleep(1)
@@ -116,7 +116,7 @@ class utils:
             "redirect_uri": self.redirect_uri,
             "code": code,
             "grant_type": "authorization_code"}
-        endpoint = f"{API_START_POINT}/oauth2/token"
+        endpoint = f"{API_START_POINT_V10}/oauth2/token"
         while True:
             temp = await session.post(endpoint, data=post_data, headers=post_headers)
             res_data = await temp.json()
@@ -129,7 +129,7 @@ class utils:
                 return res_data
 
     async def get_user(self, session, access_token):
-        endpoint = f"{API_START_POINT}/users/@me"
+        endpoint = f"{API_START_POINT_V10}/users/@me"
         get_headers = {"Authorization": f"Bearer {access_token}"}
         while True:
             temp = await session.get(endpoint, headers=get_headers)
@@ -144,7 +144,7 @@ class utils:
 
     async def add_role(self, session, guild_id, user_id, role_id):
         endpoint = "{}/guilds/{}/members/{}/roles/{}".format(
-            API_START_POINT, guild_id, user_id, role_id)
+            API_START_POINT_V10, guild_id, user_id, role_id)
         put_headers = {"authorization": f"Bot {self.token}"}
         while True:
             temp = await session.put(endpoint, headers=put_headers)
@@ -164,7 +164,7 @@ class utils:
 
     async def join_guild(self, session, access_token, guild_id, user_id):
         endpoint = "{}/guilds/{}/members/{}".format(
-            API_START_POINT, guild_id, user_id)
+            API_START_POINT_V10, guild_id, user_id)
         put_headers = {"Content-Type": "application/json",
                        "Authorization": f"Bot {self.token}"}
         put_data = {"access_token": access_token}
@@ -185,7 +185,7 @@ class utils:
                 return "Success"
 
     async def send_direct_message(self, session, user_id, content):
-        endpoint = f"{API_START_POINT}/users/@me/channels"
+        endpoint = f"{API_START_POINT_V10}/users/@me/channels"
         post_header = {"Authorization": f"Bot {self.token}"}
         post_data = {"recipient_id": user_id}
         res_data = None
@@ -201,7 +201,7 @@ class utils:
                 break
         dmid = res_data["id"]
         while True:
-            endpoint = f"{API_START_POINT}/channels/{dmid}/messages"
+            endpoint = f"{API_START_POINT_V10}/channels/{dmid}/messages"
             post_header = {"Authorization": f"Bot {self.token}"}
             post_data = {"content": "", "embeds": [{"title": content}]}
             temp = await session.post(endpoint, headers=post_header, json=post_data)

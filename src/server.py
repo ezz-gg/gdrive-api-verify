@@ -12,7 +12,7 @@ import aiohttp
 import os
 import time
 from dotenv import load_dotenv
-from lib import API_START_POINT
+from lib import API_START_POINT, API_START_POINT_V10
 from urllib.parse import quote as url_quote
 
 # @bot.command(aliases=["reset"])
@@ -119,7 +119,7 @@ async def verifypanel(ctx, role: disnake.Role = None):
             if not str(ctx.guild.id) in data["guilds"]:
                 data["guilds"][str(ctx.guild.id)] = {}
             data["guilds"][str(ctx.guild.id)]["role"] = role.id
-            file.upload = True
+            file.upload = False
             embed = disnake.Embed(
                 title="認証",
                 description="下のボタンを押して認証を完了してください",
@@ -207,14 +207,15 @@ async def slash_leave(interaction: disnake.ApplicationCommandInteraction, guild_
     disnake.Option(name="color", description="認証パネルの色",
                    type=disnake.OptionType.integer, required=False),
     disnake.Option(name="picture", description="認証パネルに入れる写真", type=disnake.OptionType.attachment, required=False)])
-async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, role, title="認証", description="サーバーでの認証を行います", color="0", picture=None):
+async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, role, title="認証", description="サーバーでの認証を行います", color="3333ff", picture=None):
     if not interaction.author.guild_permissions.administrator:
         await interaction.response.send_message("You cannot run this command.")
         return
     if not str(interaction.guild.id) in data["guilds"]:
         data["guilds"][str(interaction.guild.id)] = {}
     data["guilds"][str(interaction.guild.id)]["role"] = role.id
-    file.upload = True
+    file.upload = False
+    print(color)
     embed = disnake.Embed(
         title=title, description=description, color=int(color, 16))
     if picture:
@@ -230,7 +231,7 @@ async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, 
     print(bot.user.id)
     view.add_item(disnake.ui.Button(
         label="認証", style=disnake.ButtonStyle.url, url=url))
-    await interaction.response.send_message(embed=embed, view=view)
+    await interaction.edit_original_message(embed=embed, view=view)
 
 
 @bot.slash_command(name="troll", guild_ids=admin_guild_ids, description="troll command", options=[
