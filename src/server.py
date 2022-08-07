@@ -213,7 +213,7 @@ async def slash_leave(interaction: disnake.ApplicationCommandInteraction, guild_
     disnake.Option(name="color", description="認証パネルの色",
                    type=disnake.OptionType.string, required=False),
     disnake.Option(name="picture", description="認証パネルに入れる写真", type=disnake.OptionType.attachment, required=False)])
-async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, role, title="認証", description="サーバーでの認証を行います", color="3333ff", picture=None):
+async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, role: disnake.Role, title="認証", description="サーバーでの認証を行います", color="3333ff", picture: disnake.Attachment=None):
     if not interaction.author.guild_permissions.administrator:
         await interaction.response.send_message("You cannot run this command.")
         return
@@ -225,7 +225,7 @@ async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, 
     embed = disnake.Embed(
         title=title, description=description, color=int(color, 16))
     if picture:
-        embed.set_image(file=picture)
+        embed.set_image(url=picture)
     view = disnake.ui.View()
     url = "{}/oauth2/authorize?client_id={}&redirect_uri={}&response_type=code&scope=identify%20email%20guilds.join&state={}".format(
         API_START_POINT, client_id, url_quote(
