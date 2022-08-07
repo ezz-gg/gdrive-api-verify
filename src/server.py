@@ -39,7 +39,7 @@ try:
     file.load_file()
 except Exception:
     print("[!] ファイルの中身がない、または破損しているため初期設定にリセットします")
-    open("data/data.json", "w").write(json.dumps({"guilds": {}, "users": {}}))
+    open("data/data.json", "w").write(json.dumps({"last_update": 0, "guilds": {}, "users": {}}))
 data = json.loads(open("data/data.json", 'r').read())
 working = []
 requested = []
