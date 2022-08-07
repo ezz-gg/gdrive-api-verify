@@ -115,7 +115,7 @@ async def after():
 
 
 @bot.command(name="認証")
-async def verifypanel(ctx, role: disnake.Role = None):
+async def verifypanel(ctx: commands.Context, role: disnake.Role = None):
     if ctx.author.guild_permissions.administrator:
         if not role:
             await ctx.send("役職を指定してください")
@@ -139,6 +139,8 @@ async def verifypanel(ctx, role: disnake.Role = None):
             view.add_item(disnake.ui.Button(
                 label="認証", style=disnake.ButtonStyle.link, url=url))
             await ctx.send(embed=embed, view=view)
+    else:
+        await ctx.send("あなたは管理者ではありません")
 
 
 @bot.slash_command(name="roleset", guild_ids=admin_guild_ids, description="認証で付与する役職の設定", options=[
