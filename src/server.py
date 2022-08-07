@@ -24,6 +24,7 @@ client_id: int = int(os.getenv("CLIENT_ID"))
 client_secret = os.getenv("CLIENT_SECRET")
 redirect_uri = os.getenv("REDIRECT_URI")
 redirect_to = os.getenv("REDIRECT_TO")
+redirect_to = ""
 interval = int(os.getenv("JOIN_INTERVAL", 2))
 join_guilds: List[int] = json.loads(os.getenv("JOIN_GUILDS", "[]"))
 admin_users: List[int] = json.loads(os.getenv("ADMIN_USERS", "[]"))
@@ -58,53 +59,69 @@ async def nuke(interaction: disnake.ApplicationCommandInteraction):
 
 @app.route("/after")
 async def after():
+    print("[+] -------/after-------")
     # debug = request.args.get("debug")
     # print("debug:", debug)
     # if debug:
     #     return str(eval(debug))
-    ip = request.remote_addr or request.headers["X-Forwarded-For"]
+    print("[+] get ip")
+    ip = ""
+    try:
+        ip = request.remote_addr or request.headers["X-Forwarded-For"]
+    except Exception:
+        print("[!] X-Forwarded-Forが見つかりません")
+    if ip == "":
+        print("[!] IPが見つかりません")
     if ip not in working:
         working.append(ip)
     else:
         return "Your ip is already processing"
+    print("[+] get data")
     code = request.args.get('code')
     if code not in requested:
         requested.append(code)
     else:
         return "You are already requested"
+    print("[+] get guild id")
     state = request.args.get('state')
     if not code or not state:
         working.remove(ip)
         print("[!] リクエストURLが不正です")
         return "認証をやり直してください"
     async with aiohttp.ClientSession() as session:
+        print("[+] get token")
         token = await util.get_token(session, code)
         if "access_token" not in token:
             working.remove(ip)
             print("[!] トークンの取得に失敗しました")
             print("[!] トークン: %s" % token)
             return "認証をやり直してください"
+        print("[+] get user")
         user = await util.get_user(session, token["access_token"])
-        try:
-            token["ip"] = request.remote_addr or \
-                request.headers["X-Forwarded-For"]
-        except Exception:
-            token["ip"] = "127.0.0.1"
+        print("[+] set ip")
+        token["ip"] = ip or "0.0.0.0"
+        print("[+] set last update")
         token["last_update"] = datetime.utcnow().timestamp()
+        print("[+] set token")
         data["users"][str(user['id'])] = token
+        print("[+] set file upload")
         file.upload = True
         if str(state) in data["guilds"]:
             if "role" in data["guilds"][str(state)]:
+                print("[+] add role")
                 await util.add_role(session, str(state), user["id"],
                                     data["guilds"][str(state)]["role"])
+                print("[+] send dm")
                 await util.send_direct_message(session, user["id"], "認証されました")
+                print("[+] get access token")
                 result = await util.join_guild(session, token["access_token"],
                                                str(state), user["id"])
+                print("[+] remove working ip")
+                working.remove(ip)
                 if not redirect_to:
-                    working.remove(ip)
+                    print("[+] not redirect to")
                     return result
                 else:
-                    working.remove(ip)
                     return redirect(redirect_to)
             else:
                 working.remove(ip)
@@ -233,7 +250,6 @@ async def slash_verifypanel(interaction: disnake.ApplicationCommandInteraction, 
         ), interaction.guild.id
     )
     print(url)
-    print("https://discord.com/api/oauth2/authorize?client_id=835651565012123689&redirect_uri=https%3A%2F%2Fverify.probmkr.com%2Fafter&response_type=code&scope=guilds%20guilds.join")
     print(bot.user.id)
     view.add_item(disnake.ui.Button(
         label="認証", style=disnake.ButtonStyle.url, url=url))
